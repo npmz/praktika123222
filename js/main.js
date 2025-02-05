@@ -3,7 +3,8 @@ Vue.component('product', {
         premium: {
             type: Boolean,
             required: true
-        }
+        },
+
     },
     template: `
     <div class="product">
@@ -23,7 +24,7 @@ Vue.component('product', {
                 Out of Stock
             </p>
             <span v-show="onSale">On Sale!</span>
-            <ul>{{product-details}}</ul>
+            <product-details :details="details"></product-details>
             <div class="color-box"
                  v-for="(variant, index) in variants"
                  :key="variant.variantId"
@@ -57,6 +58,7 @@ Vue.component('product', {
             altText: "A pair jf socks",
             link: "https://www.amazon.com/s/ref=nb_sb_noss?url=search-alias%3Daps&field-keywords=socks",
             inventory: 100,
+            details: ['80% cotton', '20% polyester', 'Gender-neutral'],
             variants: [
                 {
                     variantId: 2234,
@@ -115,18 +117,19 @@ Vue.component('product', {
 })
 
 Vue.component('product-details', {
-    template: `
+        template: `
     <ul>
         <li v-for="detail in details">{{detail}}</li>
     </ul>
     `,
-    data() {
-        return {
-            details: ['80% cotton', '20% polyester', 'Gender-neutral'],
-        };
+        props: {
+            details: {
+                type: Array,
+                required: true
+            }
+        }
     }
-    }
-    )
+)
 
 let app = new Vue({
     el: '#app',
