@@ -4,6 +4,11 @@ Vue.component('product', {
             type: Boolean,
             required: true
         },
+        cart: {
+            type: Array,
+            required: true
+
+        }
 
     },
     template: `
@@ -34,9 +39,7 @@ Vue.component('product', {
             <ul>
                 <li v-for="size in sizes">{{size}}</li>
             </ul>
-            <div class="cart">
-                <p>Cart({{ cart }})</p>
-            </div>
+            
             <button
                     v-on:click="addToCart"
                     :disabled="!inStock"
@@ -44,7 +47,11 @@ Vue.component('product', {
             >
                 Add to cart
             </button>
-            <button v-on:click="deleteOnCart" v-if="cart > 0">Delete on cart</button>
+            <button 
+            v-on:click="deleteOnCart"
+            v-if="cart != 0">
+            Delete on cart
+            </button>
             <p>Shipping: {{ shipping }}</p>
         </div>
     </div>
@@ -77,19 +84,20 @@ Vue.component('product', {
             ],
 
             sizes: ['S', 'M', 'L', 'XL', 'XXL', 'XXXL'],
-            cart: 0,
+
         }
     },
     methods: {
         addToCart() {
-            this.cart += 1
+            this.$emit('add-to-cart',
+            this.variants[this.selectedVariant].variantId);
         },
         updateProduct(index) {
             this.selectedVariant = index;
             console.log(index);
         },
         deleteOnCart() {
-            this.cart -= 1
+            this.$emit('delete-on-cart');
         }
     },
     computed: {
@@ -134,8 +142,18 @@ Vue.component('product-details', {
 let app = new Vue({
     el: '#app',
     data: {
-        premium: true
+        premium: true,
+        cart: [],
+    },
+    methods: {
+        updateCart(id) {
+            this.cart.push(id);
+        },
+        deleteCart(id) {
+            this.cart.splice( -1, 1 );
+        }
     }
+
 })
 
 
