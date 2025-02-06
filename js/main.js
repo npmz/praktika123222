@@ -270,8 +270,9 @@ Vue.component('product-tabs', {
        </ul>
        <div v-show="selectedTab === 'Reviews'">
          <p v-if="!reviews.length">There are no reviews yet.</p>
+         <button @click="toggleSortOrder">Sort by Rating</button>
          <ul>
-           <li v-for="review in reviews">
+           <li v-for="review in sortedReviews">
            <p>{{ review.name }}</p>
            <p>Rating: {{ review.rating }}</p>
            <p>{{ review.review }}</p>
@@ -287,13 +288,26 @@ Vue.component('product-tabs', {
     data() {
         return {
             tabs: ['Reviews', 'Make a Review'],
-            selectedTab: 'Reviews'
+            selectedTab: 'Reviews',
+            sortAscending: false
         }
     },
     props: {
         reviews: {
             type: Array,
             required: false
+        }
+    },
+    computed: {
+        sortedReviews() {
+            return this.reviews.slice().sort((a, b) => {
+                return this.sortAscending ? a.rating - b.rating : b.rating - a.rating;
+            });
+        }
+    },
+    methods: {
+        toggleSortOrder() {
+            this.sortAscending = !this.sortAscending;
         }
     }
 })
